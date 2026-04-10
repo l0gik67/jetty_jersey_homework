@@ -1,37 +1,34 @@
 package by.l0gik67.jettyjersey.filter;
 
-import jakarta.servlet.*;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
-@Slf4j
 @Component
-public class RequestLoggingFilter implements Filter {
+public class RequestLoggingFilter extends OncePerRequestFilter {
+    private static final Logger log = LoggerFactory.getLogger(RequestLoggingFilter.class);
+    private static final int CACHE_LIMIT = 1024*1024;
+
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response,
-                         FilterChain chain) throws IOException, ServletException {
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
-        HttpServletResponse httpResponse = (HttpServletResponse) response;
-        logRequest(httpRequest);
-        long startTime = System.currentTimeMillis();
-        try {
-            chain.doFilter(request, response);
-        } finally {
-            long duration = System.currentTimeMillis() - startTime;
-            logResponse(httpRequest, httpResponse, duration);
-        }
-    }
-    private void logRequest(HttpServletRequest request) {
-        String requestURI = request.getRequestURI();
-        String method = request.getMethod();
-        log.info("Запрос: {} - {}", method, requestURI);
-    }
-    private void logResponse(HttpServletRequest request, HttpServletResponse response, long duration) {
-        int statusCode = response.getStatus();
-        log.info("Ответ: HTTP {} - {}, время выполнения: {}ms", statusCode, request.getRequestURI(), duration);
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        ContentCachingRequestWrapper wrappedRequest = new ContentCachingRequestWrapper(request, CACHE_LIMIT);
+
+        filterChain.doFilter(wrappedRequest, response);
+
+        log.info("uri={}, method={}, contentType={}, body={}, time={}",
+                request.getRequestURI(),
+                request.getMethod(),
+                request.getContentType(),
+                wrappedRequest.getContentAsString(),
+                LocalDateTime.now());
     }
 }

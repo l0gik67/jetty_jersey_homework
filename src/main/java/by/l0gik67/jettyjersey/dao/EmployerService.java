@@ -2,13 +2,13 @@ package by.l0gik67.jettyjersey.dao;
 
 import by.l0gik67.jettyjersey.dto.Employer;
 import by.l0gik67.jettyjersey.dto.EmployerCreation;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-@Component
-public class EmployerDao {
+@Service
+public class EmployerService {
 
 
     public List<Employer> getAllEmployers() {
