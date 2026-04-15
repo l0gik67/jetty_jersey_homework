@@ -1,11 +1,13 @@
 package by.l0gik67.jettyjersey.controller;
 
 
-import by.l0gik67.jettyjersey.dao.EmployerService;
+import by.l0gik67.jettyjersey.service.EmployerService;
 import by.l0gik67.jettyjersey.dto.Employer;
 import by.l0gik67.jettyjersey.dto.EmployerCreation;
-import jakarta.inject.Inject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 
 import java.util.List;
@@ -16,7 +18,7 @@ public class EmployerController {
 
     private final EmployerService employerService;
 
-    @Inject
+    @Autowired
     public EmployerController(EmployerService employerService) {
         this.employerService = employerService;
     }
@@ -33,6 +35,7 @@ public class EmployerController {
 
     @GetMapping("/{id}")
     public Employer getEmployer(@PathVariable Integer id) {
-        return employerService.getEmployerById(id).orElse(null);
+        return employerService.getEmployerById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Employer not found"));
     }
 }

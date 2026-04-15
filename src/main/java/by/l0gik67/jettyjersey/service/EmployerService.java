@@ -1,4 +1,4 @@
-package by.l0gik67.jettyjersey.dao;
+package by.l0gik67.jettyjersey.service;
 
 import by.l0gik67.jettyjersey.dto.Employer;
 import by.l0gik67.jettyjersey.dto.EmployerCreation;
