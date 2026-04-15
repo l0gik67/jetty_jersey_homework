@@ -1,4 +1,4 @@
-package by.l0gik67.jetsyjersey;
+package by.l0gik67.jettyjersey;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

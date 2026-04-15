@@ -1,0 +1,3 @@
+### Получение всех работодателя
+GET localhost:8080/employer
+Accept: application/json
